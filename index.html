@@ -23,60 +23,95 @@
         <button type="button" class="btn btn-light btn-lg btn-block">Block level button</button> -->
         <div class="card" style="width: 18rem;">
           <ul class="list-group list-group-flush">
-            <button type="button" class="btn btn-light btn-lg btn-block">Block level button</button>
-            <button type="button" class="btn btn-light btn-lg btn-block">Block level button</button>
+            <button type="button" class="btn btn-light btn-lg btn-block">Seattle</button>
+            <button type="button" class="btn btn-light btn-lg btn-block">Los Angeles</button>
           </ul>
         </div>
       </div>
       <div class = "col-lg-8">
         <div class="card">
           <div class="card-body">
-            <h1>This is some text within a card body.</h1>
-            <p>Temperature:</p>
-            <p>Humidity:</p>
-            <p>Wind Speed:</p>
-            <p>UV Index:</p>
+            <!-- <h1>This is some text within a card body.</h1>
+            <p id = "temp">Temperature:</p>
+            <p id = "humidity">Humidity:</p>
+            <p id = "windSpeed">Wind Speed:</p>
+            <p id = "uvIndex">UV Index:</p> -->
           </div>
         </div>
         <div class = "row">
           <div class="card" style="width: 9rem;">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
+            <div class ="card-body0">
+              <!-- <h5 class="card-title">Card title</h5>
               <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <p id = "temp">Temperature:</p>
+              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
           <div class="card" style="width: 9rem;">
-            <div class="card-body">
+            <div class="card-body1">
               <h5 class="card-title">Card title</h5>
               <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <p id = "temp">Temperature:</p>
+              <p id = "humidity">Humidity:</p>
             </div>
           </div>
           <div class="card" style="width: 9rem;">
-            <div class="card-body">
+            <div class="card-body2">
               <h5 class="card-title">Card title</h5>
               <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <p id = "temp">Temperature:</p>
+              <p id = "humidity">Humidity:</p>
             </div>
           </div>
           <div class="card" style="width: 9rem;">
-            <div class="card-body">
+            <div class="card-body3">
               <h5 class="card-title">Card title</h5>
               <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <p id = "temp">Temperature:</p>
+              <p id = "humidity">Humidity:</p>
             </div>
           </div>
           <div class="card" style="width: 9rem;">
-            <div class="card-body">
+            <div class="card-body4">
               <h5 class="card-title">Card title</h5>
               <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <p id = "temp">Temperature:</p>
+              <p id = "humidity">Humidity:</p>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type = "text/javascript">
+
+  function grabDate(response, index) {
+    var milliseconds = response.list[index].dt * 1000;
+    console.log(milliseconds);
+    var dateObj = new Date(milliseconds);
+    return dateObj.toLocaleDateString();
+  }
+
+    var APIKey = "ced2cf879bb0aad6596f2794924c76f0";
+    var cityName = "Seattle";
+    var queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&APPID=" + APIKey;
+
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+      console.log(response);
+      var num = response.list.length;
+      for(var i = 0; i < num; i+= 8) {
+        console.log(grabDate(response, i));
+      }
+      var weatherSet = response.list[0];
+      var cityText = response.city.name;
+      var header = $("<h1>").text(cityText + " (" + grabDate(response, 0) + ")");
+      var imageSet = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + weatherSet.weather[0].icon + ".png");
+      $(".card-body").append(header, imageSet);
+    });
+  </script>
 </body>
 </html>
