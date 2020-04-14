@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>My Weather Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="./style.css">
 </head>
@@ -16,15 +16,15 @@
       <div class = "col-lg-4">
         <h1 class = "header">Search for a city:</h1>
         <form class="form-inline">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id = searchTerm>
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id = "submitButton">Search</button>
         </form>
         <!-- <button type="button" class="btn btn-light btn-lg btn-block">Block level button</button>
         <button type="button" class="btn btn-light btn-lg btn-block">Block level button</button> -->
         <div class="card" style="width: 18rem;">
           <ul class="list-group list-group-flush">
-            <button type="button" class="btn btn-light btn-lg btn-block">Seattle</button>
-            <button type="button" class="btn btn-light btn-lg btn-block">Los Angeles</button>
+            <button type="button" class="btn btn-light btn-lg btn-block" city = "Seattle">Seattle</button>
+            <button type="button" class="btn btn-light btn-lg btn-block" city = "Los Angeles">Los Angeles</button>
           </ul>
         </div>
       </div>
@@ -49,34 +49,34 @@
           </div>
           <div class="card" style="width: 9rem;">
             <div class="card-body1">
-              <h5 class="card-title">Card title</h5>
+              <!-- <h5 class="card-title">Card title</h5>
               <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
               <p id = "temp">Temperature:</p>
-              <p id = "humidity">Humidity:</p>
+              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
           <div class="card" style="width: 9rem;">
             <div class="card-body2">
-              <h5 class="card-title">Card title</h5>
+              <!-- <h5 class="card-title">Card title</h5>
               <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
               <p id = "temp">Temperature:</p>
-              <p id = "humidity">Humidity:</p>
+              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
           <div class="card" style="width: 9rem;">
             <div class="card-body3">
-              <h5 class="card-title">Card title</h5>
+              <!-- <h5 class="card-title">Card title</h5>
               <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
               <p id = "temp">Temperature:</p>
-              <p id = "humidity">Humidity:</p>
+              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
           <div class="card" style="width: 9rem;">
             <div class="card-body4">
-              <h5 class="card-title">Card title</h5>
+              <!-- <h5 class="card-title">Card title</h5>
               <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
               <p id = "temp">Temperature:</p>
-              <p id = "humidity">Humidity:</p>
+              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
         </div>
@@ -86,13 +86,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type = "text/javascript">
 
-  function grabDate(response, index) {
-    var milliseconds = response.list[index].dt * 1000;
-    console.log(milliseconds);
-    var dateObj = new Date(milliseconds);
-    return dateObj.toLocaleDateString();
-  }
+    function grabDate(response, index) {
+      var milliseconds = response.list[index].dt * 1000;
+      console.log(milliseconds);
+      var dateObj = new Date(milliseconds);
+      return dateObj.toLocaleDateString();
+    }
 
+    function renderPage() {
+      $(".card-body").empty();
+      for(var i = 0; i < 5; i++) {
+        $(".card-body" + i).empty();
+      }
+    }
+
+    //$(document).ready(function)
     var APIKey = "ced2cf879bb0aad6596f2794924c76f0";
     var cityName = "Seattle";
     var queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&APPID=" + APIKey;
@@ -102,16 +110,32 @@
       method: "GET"
     }).then(function(response) {
       console.log(response);
-      var num = response.list.length;
-      for(var i = 0; i < num; i+= 8) {
-        console.log(grabDate(response, i));
-      }
+      renderPage();
       var weatherSet = response.list[0];
       var cityText = response.city.name;
       var header = $("<h1>").text(cityText + " (" + grabDate(response, 0) + ")");
       var imageSet = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + weatherSet.weather[0].icon + ".png");
-      $(".card-body").append(header, imageSet);
+      var temper = weatherSet.main.temp;
+      var tempSet = $("<p>").text("Temperature: " + Math.floor((temper - 273.15) * 1.8 + 32) + "\xB0F");
+      var humiditySet = $("<p>").text("Humidity: " + weatherSet.main.humidity + "%");
+      var windspeedSet = $("<p>").text("Wind Speed: " + weatherSet.wind.speed + " MPH");
+      var UVSet = "";
+      $(".card-body").append(header, imageSet, tempSet, humiditySet, windspeedSet);
+
+      for(var i = 0; i < 5; i++) {
+        var index = 7 + (i * 8);
+        var weatherSet2 = response.list[index];
+        var header = $("<h5>").addClass("card-title");
+        header.text(grabDate(response, index));
+        var imageSet = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + weatherSet2.weather[0].icon + ".png");
+        var temper = weatherSet2.main.temp;
+        var tempSet = $("<p>").text("Temperature: " + Math.floor((temper - 273.15) * 1.8 + 32) + "\xB0F");
+        var paragraph = $("<p>");
+        var humiditySet = $("<p>").text("Humidity: " + weatherSet2.main.humidity + "%");
+        $(".card-body" + i).append(header, imageSet, tempSet, paragraph, humiditySet);
+      }
     });
+
   </script>
 </body>
 </html>
