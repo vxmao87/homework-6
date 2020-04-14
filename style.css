@@ -24,6 +24,7 @@
     text-align: left;
 }
 
+/* The city buttons will change accordingly when hovered over. */
 #cityBtn:hover {
     background: #3C72EC;
     color: white;
