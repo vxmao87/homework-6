@@ -39,7 +39,7 @@ function renderPage() {
 // on its value. It returns the information as an element.
 function grabUVData(APIKey, lat, lon) {
     // The query URL of the Open Weather Map for UV Index lookup is implemented here.
-    var queryURL = "http://api.openweathermap.org/data/2.5/uvi/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
+    var queryURL = "https://api.openweathermap.org/data/2.5/uvi/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
     var UVSet = $("<p>");
     var UVSpan = $("<span>");
     $.ajax({
@@ -72,7 +72,7 @@ function grabUVData(APIKey, lat, lon) {
 function getInfo(citySearchTerm) {
     // The query URL for Open Weather Map is implemented here.
     var APIKey = "ced2cf879bb0aad6596f2794924c76f0";
-    var queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + citySearchTerm + "&APPID=" + APIKey;
+    var queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + citySearchTerm + "&APPID=" + APIKey;
 
     $.ajax({
         url: queryURL,
