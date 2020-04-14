@@ -1,3 +1,30 @@
-.row {
-    margin-bottom: 20px;
+.card-body0,
+.card-body1,
+.card-body2,
+.card-body3,
+.card-body4 {
+    background-color: #3C72EC;
+    color: white;
+}
+
+.col-lg-8 {
+    padding-left: 50px;
+}
+
+.row,
+.forecastTitle {
+    padding-top: 10px;
+}
+
+.btn-group-vertical {
+    padding-top: 30px;
+}
+
+#cityBtn {
+    text-align: left;
+}
+
+#cityBtn:hover {
+    background: #3C72EC;
+    color: white;
 }
