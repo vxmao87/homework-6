@@ -21,7 +21,7 @@
         </form>
         <!-- <button type="button" class="btn btn-light btn-lg btn-block">Block level button</button>
         <button type="button" class="btn btn-light btn-lg btn-block">Block level button</button> -->
-        <div class="card" style="width: 18rem;">
+        <div class="card" style="width: 18rem;" id = "buttonList">
           <ul class="list-group list-group-flush">
             <button type="button" class="btn btn-light btn-lg btn-block" city = "Seattle">Seattle</button>
             <button type="button" class="btn btn-light btn-lg btn-block" city = "Los Angeles">Los Angeles</button>
@@ -100,40 +100,54 @@
       }
     }
 
-    //$(document).ready(function)
-    var APIKey = "ced2cf879bb0aad6596f2794924c76f0";
-    var cityName = "Seattle";
-    var queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&APPID=" + APIKey;
+    function getInfo(citySearchTerm) {
+      console.log("Inside!");
+      var APIKey = "ced2cf879bb0aad6596f2794924c76f0";
+      var queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + citySearchTerm + "&APPID=" + APIKey;
 
-    $.ajax({
-      url: queryURL,
-      method: "GET"
-    }).then(function(response) {
-      console.log(response);
-      renderPage();
-      var weatherSet = response.list[0];
-      var cityText = response.city.name;
-      var header = $("<h1>").text(cityText + " (" + grabDate(response, 0) + ")");
-      var imageSet = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + weatherSet.weather[0].icon + ".png");
-      var temper = weatherSet.main.temp;
-      var tempSet = $("<p>").text("Temperature: " + Math.floor((temper - 273.15) * 1.8 + 32) + "\xB0F");
-      var humiditySet = $("<p>").text("Humidity: " + weatherSet.main.humidity + "%");
-      var windspeedSet = $("<p>").text("Wind Speed: " + weatherSet.wind.speed + " MPH");
-      var UVSet = "";
-      $(".card-body").append(header, imageSet, tempSet, humiditySet, windspeedSet);
-
-      for(var i = 0; i < 5; i++) {
-        var index = 7 + (i * 8);
-        var weatherSet2 = response.list[index];
-        var header = $("<h5>").addClass("card-title");
-        header.text(grabDate(response, index));
-        var imageSet = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + weatherSet2.weather[0].icon + ".png");
-        var temper = weatherSet2.main.temp;
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function(response) {
+        console.log(response);
+        renderPage();
+        var weatherSet = response.list[0];
+        var cityText = response.city.name;
+        var header = $("<h1>").text(cityText + " (" + grabDate(response, 0) + ")");
+        var imageSet = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + weatherSet.weather[0].icon + ".png");
+        var temper = weatherSet.main.temp;
         var tempSet = $("<p>").text("Temperature: " + Math.floor((temper - 273.15) * 1.8 + 32) + "\xB0F");
-        var paragraph = $("<p>");
-        var humiditySet = $("<p>").text("Humidity: " + weatherSet2.main.humidity + "%");
-        $(".card-body" + i).append(header, imageSet, tempSet, paragraph, humiditySet);
-      }
+        var humiditySet = $("<p>").text("Humidity: " + weatherSet.main.humidity + "%");
+        var windspeedSet = $("<p>").text("Wind Speed: " + weatherSet.wind.speed + " MPH");
+        var UVSet = "";
+        $(".card-body").append(header, imageSet, tempSet, humiditySet, windspeedSet);
+
+        for(var i = 0; i < 5; i++) {
+          var index = 7 + (i * 8);
+          var weatherSet2 = response.list[index];
+          var header = $("<h5>").addClass("card-title");
+          header.text(grabDate(response, index));
+          var imageSet = $("<img>").attr("src", "http://openweathermap.org/img/wn/" + weatherSet2.weather[0].icon + ".png");
+          var temper = weatherSet2.main.temp;
+          var tempSet = $("<p>").text("Temperature: " + Math.floor((temper - 273.15) * 1.8 + 32) + "\xB0F");
+          var humiditySet = $("<p>").text("Humidity: " + weatherSet2.main.humidity + "%");
+          $(".card-body" + i).append(header, imageSet, tempSet, humiditySet);
+        }
+      });
+    }
+
+    $("#submitButton").on("click", function() {
+      var cityName = $("#searchTerm").val();
+      alert(cityName);
+      console.log(cityName);
+      console.log(typeof(cityName));
+      getInfo(cityName);
+    });
+
+    $(".btn").on("click", function() {
+      var cityName = $(this).attr("city");
+      console.log(typeof(cityName));
+      getInfo(cityName);
     });
 
   </script>
