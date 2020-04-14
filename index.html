@@ -17,66 +17,37 @@
         <h1 class = "header">Search for a city:</h1>
         <form class="form-inline">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id = searchTerm>
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id = "submitButton">Search</button>
+          <button type="button" class="btn btn-primary">Search</button>
         </form>
-        <!-- <button type="button" class="btn btn-light btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-light btn-lg btn-block">Block level button</button> -->
-        <div class="card" style="width: 18rem;" id = "buttonList">
-          <ul class="list-group list-group-flush">
-            <button type="button" class="btn btn-light btn-lg btn-block" city = "Seattle">Seattle</button>
-            <button type="button" class="btn btn-light btn-lg btn-block" city = "Los Angeles">Los Angeles</button>
-          </ul>
+        <div class="btn-group-vertical d-flex justify-content-center">
+          <button type="button" class="btn btn-light btn-lg btn-block" city = "Seattle">Seattle</button>
+          <button type="button" class="btn btn-light btn-lg btn-block" city = "Los Angeles">Los Angeles</button>
         </div>
       </div>
-      <div class = "col-lg-8">
+      <div class = "col-lg-8" style = "display: none;">
         <div class="card">
           <div class="card-body">
-            <!-- <h1>This is some text within a card body.</h1>
-            <p id = "temp">Temperature:</p>
-            <p id = "humidity">Humidity:</p>
-            <p id = "windSpeed">Wind Speed:</p>
-            <p id = "uvIndex">UV Index:</p> -->
           </div>
         </div>
         <div class = "row">
           <div class="card" style="width: 9rem;">
             <div class ="card-body0">
-              <!-- <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p id = "temp">Temperature:</p>
-              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
           <div class="card" style="width: 9rem;">
             <div class="card-body1">
-              <!-- <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p id = "temp">Temperature:</p>
-              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
           <div class="card" style="width: 9rem;">
             <div class="card-body2">
-              <!-- <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p id = "temp">Temperature:</p>
-              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
           <div class="card" style="width: 9rem;">
             <div class="card-body3">
-              <!-- <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p id = "temp">Temperature:</p>
-              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
           <div class="card" style="width: 9rem;">
             <div class="card-body4">
-              <!-- <h5 class="card-title">Card title</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-              <p id = "temp">Temperature:</p>
-              <p id = "humidity">Humidity:</p> -->
             </div>
           </div>
         </div>
@@ -88,7 +59,6 @@
 
     function grabDate(response, index) {
       var milliseconds = response.list[index].dt * 1000;
-      console.log(milliseconds);
       var dateObj = new Date(milliseconds);
       return dateObj.toLocaleDateString();
     }
@@ -98,6 +68,35 @@
       for(var i = 0; i < 5; i++) {
         $(".card-body" + i).empty();
       }
+    }
+
+    function grabUVData(APIKey, lat, lon) {
+      var queryURL = "http://api.openweathermap.org/data/2.5/uvi/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
+      var UVSet = $("<p>");
+      var UVSpan = $("<span>");
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function(response) {
+        console.log(response);
+        var UVNum = response[0].value;
+        UVSpan.text(UVNum);
+        UVSpan.attr("style", );
+        if(UVNum >=0 && UVNum <= 2.9) {
+          UVSpan.attr("style", "background-color: green;");
+        } else if(UVNum >= 3 && UVNum <= 5.9) {
+          UVSpan.attr("style", "background-color: yellow;");
+        } else if(UVNum >= 6 && UVNum <= 7.9) {
+          UVSpan.attr("style", "background-color: orange;");
+        } else if(UVNum >= 8 && UVNum <= 10.9) {
+          UVSpan.attr("style", "background-color: red; color: white;");
+        } else if(UVNum >= 11) {
+          UVSpan.attr("style", "background-color: purple; color: white");
+        } 
+        UVSet.text("UV Index: ");
+        UVSet.append(UVSpan);
+      });
+      return UVSet;
     }
 
     function getInfo(citySearchTerm) {
@@ -118,9 +117,12 @@
         var temper = weatherSet.main.temp;
         var tempSet = $("<p>").text("Temperature: " + Math.floor((temper - 273.15) * 1.8 + 32) + "\xB0F");
         var humiditySet = $("<p>").text("Humidity: " + weatherSet.main.humidity + "%");
-        var windspeedSet = $("<p>").text("Wind Speed: " + weatherSet.wind.speed + " MPH");
-        var UVSet = "";
-        $(".card-body").append(header, imageSet, tempSet, humiditySet, windspeedSet);
+        var windSpeedSet = $("<p>").text("Wind Speed: " + weatherSet.wind.speed + " MPH");
+        var latitude = response.city.coord.lat;
+        var longitude = response.city.coord.lon;
+        var UVSet = grabUVData(APIKey, latitude, longitude);
+        header.append(imageSet);
+        $(".card-body").append(header, tempSet, humiditySet, windSpeedSet, UVSet);
 
         for(var i = 0; i < 5; i++) {
           var index = 7 + (i * 8);
@@ -134,20 +136,20 @@
           $(".card-body" + i).append(header, imageSet, tempSet, humiditySet);
         }
       });
+      $(".col-lg-8").attr("style", "display: block");
     }
 
-    $("#submitButton").on("click", function() {
-      var cityName = $("#searchTerm").val();
-      alert(cityName);
-      console.log(cityName);
-      console.log(typeof(cityName));
-      getInfo(cityName);
+    $(".btn-primary").on("click", function() {
+      var cityNamer = $("#searchTerm").val();
+      alert(cityNamer);
+      getInfo(cityNamer);
+      console.log("Success!");
     });
 
     $(".btn").on("click", function() {
       var cityName = $(this).attr("city");
-      console.log(typeof(cityName));
       getInfo(cityName);
+      console.log("Finished!");
     });
 
   </script>
