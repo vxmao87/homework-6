@@ -12,6 +12,6 @@ Using jQuery, CSS and HTML, I:
     4. Grabbed data from local storage to present the user with any previously searched cities as buttons to conveniently check weather for those cities
     5. Added event listeners for buttons, while taking into account event delegation to make sure each one functioned properly
 
-Access the weather dashboard here: https://vxmao87.github.io/homework-6/
+Access the weather dashboard here: https://vxmao87.github.io/weather-dashboard/
 
 ![image](Assets/weatherDashboard.png)
