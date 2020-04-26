@@ -1,5 +1,3 @@
-# homework-6
-
 # Weather Dashboard
 
 A weather application that displays the current weather and a 5-day forecast of any city that the user searches for. The user can then use this information to plan trips ahead of time depending on many factors.
